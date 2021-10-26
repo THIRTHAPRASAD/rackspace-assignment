@@ -54,25 +54,25 @@ I tool `ansible-vault` as an secrets manager for storing and passing env level s
     ```
 
 * **deploying application using ansible on aws infra**
-    1. prepare hosts file with by listing the instance IP address and key file
-        ```shell
-	   cd anible/
-           vi hosts
-        ```
-	<br></br>
-        then add the instance details as below format
+* 1. prepare hosts file with by listing the instance IP address and key file
+       ```bash
+       cd anible/
+       vi hosts
+       ```
+        then add the instance details as below format.
         ```bash
-	[all]     # list the IP/DNS addresses of the VMs to deploy VM Enforcer
-	10.0.0.1       ansible_ssh_private_key_file=~/.ssh/test-key    ansible_user=test-user
-	10.0.0.x       ansible_ssh_private_key_file=~/.ssh/test-key
-	test.rackspace.com  ansible_user=test-user
-	```
-    2. deploy application on the hosts
+         [all]     # list the IP/DNS addresses of the VMs to deploy VM Enforcer
+         10.0.0.1       ansible_ssh_private_key_file=~/.ssh/test-key    ansible_user=test-user
+         10.0.0.x       ansible_ssh_private_key_file=~/.ssh/test-key
+         test.rackspace.com  ansible_user=test-user
+	 ```
+
+* 2. deploy application on the hosts
         ```shell
         ansible-playbook lamp-app.yaml -i hosts -e env=prod --vault-password-file pass -vv
         ```
 
-    3. (optional) edit DB values
+* 3. (optional) edit DB values
         ```shell
         ansible-vault edit vars/prod-vault.yaml
         ```
