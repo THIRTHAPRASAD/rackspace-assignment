@@ -1,0 +1,100 @@
+---
+- hosts: all
+  vars_files:
+    - vars/prod-vault.yaml
+
+  tasks:
+  - name: install packets (1)
+    apt:
+      name:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - gnupg-agent
+      - software-properties-common
+      - vim
+      - haveged
+
+  # checking whether docker installed or not on debian based systems
+  - name: "Check if docker_check package is installed or not on Debian Linux family"
+    command: docker version
+    register: docker_check
+    when: ansible_facts['os_family'] == "Debian"
+  - name: "Check if docker-compose_check package is installed or not on Debian Linux family"
+    command: docker-compose version
+    register: docker_compose_check
+    when: ansible_facts['os_family'] == "Debian"
+  
+  # checking whether docker installed or not on redhat based systems
+  - name: "Check if docker_check package is installed or not on Redhat Linux family"
+    command: docker version
+    register: docker_check
+    when: ansible_facts['os_family'] == "RedHat"
+  - name: "Check if docker-compose_check package is installed or not on Redhat Linux family"
+    command: docker_compose version
+    register: docker-compose_check
+    when: ansible_facts['os_family'] == "RedHat"
+
+  - name: fetch docker apt key
+    shell: curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add -
+    become: true
+    when: docker_check is failed
+
+
+  - name: Add docker repository
+    shell: add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/debian $(lsb_release -cs) stable"
+    when: docker_check is failed
+
+  - name: Refresh cache
+    apt:
+      update_cache: yes
+    when: docker_check is failed
+
+  - name: Update distro
+    apt:
+      name: "*"
+      state: latest
+    when: docker_check is failed
+    become: true
+
+  - name: Update all packages to the latest version
+    apt:
+      upgrade: dist   
+    when: docker_check is failed
+    become: true
+
+  - name: install packets (2)
+    apt:
+      name:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+    when: docker_check is failed
+    become: true
+
+  - name: install docker compose    
+    get_url:
+      url: https://github.com/docker/compose/releases/download/1.27.3/docker-compose-Linux-x86_64
+      dest: /usr/local/bin/docker-compose
+      mode: 755
+    when: docker_check is failed
+
+  - name: docker-compose env set
+    template:
+      src=env.j2
+      dest=../lamp-app/.env1-{{env}}
+
+  - name: remove for containers that actually exist
+    #shell: 'docker stop $(docker ps -a --filter name={{ item }} -q ) && docker rm $(docker ps -a --filter name={{ item }} -q )'
+    shell : |
+      CONTAINER_NAME={{ item }}
+      OLD="$(docker ps --all --quiet --filter=name="$CONTAINER_NAME")"
+      if [ -n "$OLD" ]; then
+        docker stop $OLD && docker rm $OLD
+      fi
+    with_items:
+      - 'lamp'
+
+  - name: build phase
+    shell:
+      cd ../lamp-app &&  docker-compose build && docker-compose --env-file .env-{{ env }} up -d
