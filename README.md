@@ -56,8 +56,8 @@ I tool `ansible-vault` as an secrets manager for storing and passing env level s
 * **deploying application using ansible on aws infra**
     1. prepare hosts file with by listing the instance IP address and key file
         ```shell
-	 cd anible/
-         vi hosts
+	   cd anible/
+           vi hosts
         ```
 	<br></br>
         then add the instance details as below format
