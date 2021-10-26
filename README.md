@@ -24,13 +24,13 @@ I tool `ansible-vault` as an secrets manager for storing and passing env level s
 * Deploying appication and db containers
     1. for stage environment
     ```shell
-    	cd lamp-app/
-	docker-compose build && docker-compose --env-file .env-stage up -d
+    cd lamp-app/
+    docker-compose build && docker-compose --env-file .env-stage up -d
     ```
     2. for prod environment
     ```shell
-	cd lamp-app/
-    	docker-compose build && docker-compose --env-file .env-prod up -d
+    cd lamp-app/
+    docker-compose build && docker-compose --env-file .env-prod up -d
     ```
 ## Application Deployment on AWS environment
 
@@ -41,9 +41,9 @@ I tool `ansible-vault` as an secrets manager for storing and passing env level s
 4. ansible
 
 * **Clone github repo**
-	```shell
-	git clone https://github.com/THIRTHAPRASAD/rackspace-assignment.git
-	```
+   ```shell
+    git clone https://github.com/THIRTHAPRASAD/rackspace-assignment.git
+    ```
 
 * **build infra**
     ```shell
@@ -56,9 +56,10 @@ I tool `ansible-vault` as an secrets manager for storing and passing env level s
 * **deploying application using ansible on aws infra**
     1. prepare hosts file with by listing the instance IP address and key file
         ```shell
-	cd anible/
-        vi hosts
+	 cd anible/
+         vi hosts
         ```
+	<br></br>
         then add the instance details as below format
         ```shell
         [all]     # list the IP/DNS addresses of the VMs to deploy VM Enforcer
