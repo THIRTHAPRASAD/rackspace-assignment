@@ -17,16 +17,20 @@ I tool `ansible-vault` as an secrets manager for storing and passing env level s
 
 **Application deployment**
 * Clone github repo
-
+	```shell
+	git clone https://github.com/THIRTHAPRASAD/rackspace-assignment.git
+	```
 
 * Deploying appication and db containers
     1. for stage environment
     ```shell
-    docker-compose build && docker-compose --env-file .env-stage up -d
+    	cd lamp-app/
+	docker-compose build && docker-compose --env-file .env-stage up -d
     ```
     2. for prod environment
     ```shell
-    docker-compose build && docker-compose --env-file .env-prod up -d
+	cd lamp-app/
+    	docker-compose build && docker-compose --env-file .env-prod up -d
     ```
 ## Application Deployment on AWS environment
 
@@ -37,11 +41,13 @@ I tool `ansible-vault` as an secrets manager for storing and passing env level s
 4. ansible
 
 * **Clone github repo**
-
+	```shell
+	git clone https://github.com/THIRTHAPRASAD/rackspace-assignment.git
+	```
 
 * **build infra**
     ```shell
-    cd lamp-infra
+    cd terraform
     terraform init
     terraform plan
     terraform apply
@@ -50,6 +56,7 @@ I tool `ansible-vault` as an secrets manager for storing and passing env level s
 * **deploying application using ansible on aws infra**
     1. prepare hosts file with by listing the instance IP address and key file
         ```shell
+	cd anible/
         vi hosts
         ```
         then add the instance details as below format
@@ -61,13 +68,11 @@ I tool `ansible-vault` as an secrets manager for storing and passing env level s
         ```
     2. deploy application on the hosts
         ```shell
-        cd ansible
         ansible-playbook lamp-app.yaml -i hosts -e env=prod --vault-password-file pass -vv
         ```
 
     3. (optional) edit DB values
         ```shell
-        cd ansible
         ansible-vault edit vars/prod-vault.yaml
         ```
         enter password `rack` and the edit the values and save the file
